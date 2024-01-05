@@ -19,6 +19,10 @@ class Town
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $zip_code = null;
 
+    #[ORM\ManyToOne(inversedBy: 'towns')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?District $district = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +48,18 @@ class Town
     public function setZipCode(?string $zip_code): static
     {
         $this->zip_code = $zip_code;
+
+        return $this;
+    }
+
+    public function getDistrict(): ?District
+    {
+        return $this->district;
+    }
+
+    public function setDistrict(?District $district): static
+    {
+        $this->district = $district;
 
         return $this;
     }

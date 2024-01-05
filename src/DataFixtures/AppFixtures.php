@@ -37,22 +37,25 @@ class AppFixtures extends Fixture
         ],
     ]; 
     
-    foreach($mainCategories as $mainCategoryLabel => $subCategories){
+    foreach ($mainCategories as $mainCategoryLabel => $subCategories) {
         $mainCategory = new Category();
         $mainCategory->setCategoryName($mainCategoryLabel);
         $manager->persist($mainCategory);
-        
-        foreach($subCategories as $subCategoryLabel => $products){
+    
+        foreach ($subCategories as $subCategoryLabel => $products) {
             $subCategory = new Category();
             $subCategory->setCategoryName($subCategoryLabel);
+            $subCategory->setParent($mainCategory); // Set the parent category
             $manager->persist($subCategory);
-            
-            foreach($products as $productName){
+    
+            foreach ($products as $productName) {
                 $product = new Product();
                 $product
                     ->setProductName($productName)
-                    ->setPrice($faker->randomFloat(2));
+                    ->setPrice($faker->randomFloat(2))
+                    ->setCategory($subCategory);
                 $manager->persist($product);
+                
             }
             $mainCategory->addChild($subCategory);
         }
@@ -67,33 +70,36 @@ class AppFixtures extends Fixture
                  ->setCoeff($faker->randomFloat(1, 1, 2));       
         $manager->persist($substance);
     }
-    
+
     $countries = [];
 
     for ($i = 0; $i < 30; $i++){
 
-        $country = new Country;
-        $country-> setName ( $faker ->realTextBetween(3,10));
+    $country = new Country();
+    $country->setName($faker ->realTextBetween(3,10));
+    $manager->persist($country);
+    $countries[] = $country;
+}
 
-        $manager->persist($country);
-        $countries[] = $country;
-    }
-
-    $districts = [];
+$districts = [];
     for ($i = 0; $i < 30; $i++){
-        $district = new District;
-        $district-> setName ( $faker ->realTextBetween(3,10));
+        $district = new District();
+        $district->setName($faker->realTextBetween(3, 10));
+        $district->setCountry($faker->randomElement($countries));
         $manager->persist($district);
         $districts[] = $district;
-    }
+        
+}
 
-    $towns = [];
-    for ($i = 0; $i < 30; $i++){
-        $town = new Town;
-        $town-> setName ( $faker ->realTextBetween(3,10));
-        $town-> setZipCode ( $faker ->randomNumber(3,10));
-        $manager->persist($town);
-        $towns[] = $town;
+$towns = [];
+for ($i = 0; $i < 30; $i++){
+    $town = new Town();
+    $town->setName($faker->realTextBetween(3, 10));
+    $town->setZipCode($faker->randomNumber(5, 10));
+    $town->setDistrict($faker->randomElement($districts));
+    $manager->persist($town);
+    $towns[] = $town;
+    
     }
 
     $manager->flush();  }  }
