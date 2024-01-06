@@ -3,17 +3,32 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Client;
 use App\Entity\Country;
 use App\Entity\District;
+use App\Entity\Employee;
 use App\Entity\Material;
+use App\Entity\Order;
+use App\Entity\OrderProduct;
 use App\Entity\Product;
+use App\Entity\QualityProduct;
+use App\Entity\Service;
+use App\Entity\StatusOrder;
 use App\Entity\Town;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private $userPasswordHasherInterface;
+
+    public function __construct (UserPasswordHasherInterface $userPasswordHasherInterface) 
+    {
+        $this->userPasswordHasherInterface = $userPasswordHasherInterface;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -90,7 +105,7 @@ $districts = [];
         $districts[] = $district;
         
 }
-
+//towns 
 $towns = [];
 for ($i = 0; $i < 30; $i++){
     $town = new Town();
@@ -102,5 +117,121 @@ for ($i = 0; $i < 30; $i++){
     
     }
 
-    $manager->flush();  }  }
+    // clients
+    $clients = [];
+    for($i = 0; $i<10; $i++){
+      $client = new Client();
+      $client->setEmail($faker->email());
+      $client ->setPassword("1234567890");
+      $client ->setFirstName($faker->firstName());
+      $client ->setLastname($faker->lastName());
+      $client->setBirthday($faker->dateTimeBetween('-20 years', 'now'));
+      $client->setAdress($faker->address());
+      $client->setTowns($faker->randomElement($towns));
 
+      $manager->persist($client);
+      $clients[]=$client;
+    }
+
+     // employées
+     $employees = [];
+     for($i=0; $i<3; $i++){
+       $employee = new Employee();
+       $employee->setEmail($faker->email());
+       $employee ->setPassword("1234567890");
+       $employee->setFirstName($faker->firstName());
+       $employee->setLastname($faker->lastName());
+       $employee->setBirthday($faker->dateTimeBetween('-40 years', 'now'));
+       $employee->setAdress($faker->address());
+       $employee->setIsAdmin($faker->boolean(3));
+       $employee->setTowns($faker->randomElement($towns));
+       $employee->setEmpNumber($faker->randomNumber('1','5'));
+       $manager->persist($employee);
+       $employees[]=$employee;
+     }
+// orders
+      for ($i = 0; $i < 10; $i++) {
+        $order = new Order();
+        $order->setDateOrder($faker->dateTimeThisMonth());
+        $order->setDateRender($faker->dateTimeThisMonth());
+        $order->setClient($faker->randomElement($clients));
+
+        $manager->persist($order);
+
+    }
+    //qualityproduct
+
+    for ($i = 0; $i < 10; $i++) {
+        $qualityProduct = new QualityProduct ();
+        $qualityProduct->setStatusName($faker->word);
+
+        $manager->persist($qualityProduct);
+    }
+//services
+    for ($i = 0; $i < 5; $i++) {
+        $service = new Service();
+        $service->setName($faker->word);
+        $service->setCoeff($faker->randomFloat(2, 0.5, 2.0));
+
+        $manager->persist($service);
+
+    }
+//status Order
+    $statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+
+    foreach ($statuses as $key => $status) {
+        $statusOrder = new StatusOrder();
+        $statusOrder->setStatus($status);
+
+        $manager->persist($statusOrder);
+
+    } 
+
+    for ($i = 0; $i < 20; $i++) {
+        $orderProduct = new OrderProduct();
+        $orderProduct->setQuantity($faker->numberBetween(1, 10));
+        $orderProduct->setProducts($product);      
+        $orderProduct->setMaterials($substance);
+        $orderProduct->setProductsQualities($qualityProduct);
+        $orderProduct->setStatusesOrders($statusOrder);
+        $orderProduct->setServices($service);
+        $orderProduct->setOrders($order);        
+        $manager->persist($orderProduct);
+    }
+    $manager->flush();  
+} }
+
+
+    
+    // $users = [];
+    // $regularuser = new User ();
+    // $regularuser->setEmail("test@example.com");
+   
+    // $regularuser->setPassword(
+    //     $this->userPasswordHasherInterface->hashPassword(
+    //         $regularuser, "test_pass"
+
+    //     )
+    // );
+    // $regularuser->setRoles(
+    //     ['ROLE_USER']
+    // );
+    // $manager->persist($regularuser);
+    // $manager->flush();
+    // $user = new User();
+    // $user->setEmail("admin@example.com");
+   
+    // $user->setPassword(
+    //     $this->userPasswordHasherInterface->hashPassword(
+    //         $user, "test_pass"
+
+    //     )
+    // );
+    // $user->setRoles(
+    //     ['ROLE_ADMIN']
+    // );
+
+    // $manager->persist($user);
+    // $manager->flush();
+
+    // $users = [$regularuser, $user];

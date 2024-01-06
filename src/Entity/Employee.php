@@ -6,20 +6,14 @@ use App\Repository\EmployeeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
-class Employee
+class Employee extends User
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $empNumber = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\Column]
+    private ?bool $isAdmin = null;
 
     public function getEmpNumber(): ?string
     {
@@ -29,6 +23,18 @@ class Employee
     public function setEmpNumber(string $empNumber): static
     {
         $this->empNumber = $empNumber;
+
+        return $this;
+    }
+
+    public function isIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): static
+    {
+        $this->isAdmin = $isAdmin;
 
         return $this;
     }
