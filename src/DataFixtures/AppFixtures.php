@@ -51,7 +51,10 @@ class AppFixtures extends Fixture
                 "Pyjamas" => ["Pyjama deux pièces", "Chemise de nuit", "Combinaison pyjama"],
             ],
         ];
-        $productsEntities = [];
+
+        // $productsEntities = [];
+        $counter = 0;
+
         foreach ($mainCategories as $mainCategoryLabel => $subCategories) {
             $mainCategory = new Category();
             $mainCategory->setCategoryName($mainCategoryLabel);
@@ -60,9 +63,11 @@ class AppFixtures extends Fixture
             foreach ($subCategories as $subCategoryLabel => $products) {
                 $subCategory = new Category();
                 $subCategory->setCategoryName($subCategoryLabel);
-                $subCategory->setParent($mainCategory); // Set the parent category
+                $subCategory->setParent($mainCategory); 
                 $manager->persist($subCategory);
      //products
+
+    
                 foreach ($products as $productName) {
                     $product = new Product();
                     $product
@@ -71,7 +76,16 @@ class AppFixtures extends Fixture
                         ->setCategory($subCategory);
                     $manager->persist($product);
                     $productsEntities[] = $product;
+
+                    $counter++;
+
+                    // Vérifiez si le compteur atteint 10, si oui, sortez de la boucle
+                    if ($counter >= 10) {
+                        break;
+                    }
+
                 }
+            
                 $mainCategory->addChild($subCategory);
             }
             $manager->persist($mainCategory);
@@ -91,7 +105,7 @@ class AppFixtures extends Fixture
 
         $countries = [];
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 10; $i++) {
 
             $country = new Country();
             $country->setName($faker->realTextBetween(3, 10));
@@ -100,7 +114,7 @@ class AppFixtures extends Fixture
         }
 
         $districts = [];
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $district = new District();
             $district->setName($faker->realTextBetween(3, 10));
             $district->setCountry($faker->randomElement($countries));
@@ -110,7 +124,7 @@ class AppFixtures extends Fixture
         }
         //towns 
         $towns = [];
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $town = new Town();
             $town->setName($faker->realTextBetween(3, 10));
             $town->setZipCode($faker->randomNumber(5, 10));
@@ -192,6 +206,7 @@ class AppFixtures extends Fixture
         //     $manager->persist($service);
 
         // }
+
         foreach ($pressingServices as $serviceName) {
             $pressingService = new Service();
             $pressingService->setName($serviceName);
@@ -212,7 +227,7 @@ class AppFixtures extends Fixture
             $statusOrderEntities[] = $statusOrder;
         }
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $orderProduct = new OrderProduct();
             $orderProduct->setQuantity($faker->numberBetween(1, 10));
             $orderProduct->setProducts($faker->randomElement($productsEntities));
