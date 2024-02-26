@@ -8,9 +8,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource]
+#[ApiResource (normalizationContext:['groups'=>['users:read']])]
 
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "discr", type: "string")]
@@ -20,9 +22,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['users:read'])]
+
     protected ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['users:read'])]
     protected ?string $email = null;
 
     #[ORM\Column]
@@ -32,22 +37,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['users:read'])]
+
     protected ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['users:read'])]
+
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['users:read'])]
+
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['users:read'])]
+
     private ?string $adress = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['users:read'])]
+
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['users:read'])]
+
     private ?Town $towns = null;
 
     public function getId(): ?int
