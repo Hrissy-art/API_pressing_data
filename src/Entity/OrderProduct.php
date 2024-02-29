@@ -6,15 +6,18 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\OrderProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: OrderProductRepository::class)]
-#[ApiResource]
+#[ApiResource(normalizationContext:['groups'=>['orderProduct:read']])]
 
 class OrderProduct
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['orderProduct:read'])]
+
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
@@ -28,18 +31,26 @@ class OrderProduct
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderProduct:read'])]
+
     private ?Material $materials = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderProduct:read'])]
+
     private ?QualityProduct $products_qualities = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderProduct:read'])]
+
     private ?StatusOrder $statuses_orders = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['orderProduct:read'])]
+
     private ?Service $services = null;
 
     public function getId(): ?int
