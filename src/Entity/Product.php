@@ -1,10 +1,7 @@
 <?php namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
+
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,20 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ApiResource (normalizationContext:['groups'=>['products:read']],
-operations:[new GetCollection(),
-new Get()])]
-#[ApiFilter(SearchFilter::class, properties:['product_name'=> 'ipartial'])]
+#[ApiResource (normalizationContext:['groups'=>['products:read']])]
 class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['products:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['products:read'])]
+    #[Groups(['products:read', 'orderProduct:read'])]
 
     private ?string $product_name = null;
 
@@ -35,6 +28,8 @@ class Product
     private ?float $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
+    #[Groups(['products:read'])]
+
     private ?Category $category = null;
 
     #[ORM\OneToMany(mappedBy: 'products', targetEntity: OrderProduct::class, fetch: 'LAZY')]

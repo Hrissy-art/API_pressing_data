@@ -21,6 +21,7 @@ class OrderProduct
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]

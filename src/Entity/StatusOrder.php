@@ -17,12 +17,11 @@ class StatusOrder
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["order:read"])]
 
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["order:read"])]
+    #[Groups(['orderProduct:read'])]
 
     private ?string $status = null;
 
