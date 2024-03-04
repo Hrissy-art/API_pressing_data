@@ -38,31 +38,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Groups(['users:read'])]
-    private ?string $firstName = null;
+    protected ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['users:read'])]
-    private ?string $lastName = null;
+    protected ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['users:read'])]
-    private ?string $adress = null;
+    protected ?string $adress = null;
 
     #[ORM\Column(type: "date")]
     #[Groups(['users:read'])]
-    private ?\DateTimeInterface $birthday = null;
+    protected ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $street_number = null;
+    protected ?string $street_number = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $town = null;
+    protected ?string $town = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $district = null;
+    protected ?string $district = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $country = null;
+    protected ?string $country = null;
 
     public function getId(): ?int
     {
