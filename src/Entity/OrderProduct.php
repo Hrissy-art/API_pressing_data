@@ -46,6 +46,7 @@ class OrderProduct
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['orderProduct:read'])]
 
+
     private ?StatusOrder $statuses_orders = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]

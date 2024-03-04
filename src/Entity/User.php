@@ -4,16 +4,13 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource (normalizationContext:['groups'=>['users:read']])]
-
+#[ApiResource(normalizationContext:['groups'=>['users:read']])]
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "discr", type: "string")]
 #[ORM\DiscriminatorMap(['user' => User::class, 'client' => Client::class, 'employee'=> Employee::class])]
@@ -23,7 +20,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['users:read'])]
-
     protected ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -38,34 +34,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Groups(['users:read'])]
-
     protected ?string $password = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['users:read'])]
-
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['users:read'])]
-
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['users:read'])]
-
     private ?string $adress = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: "date")]
     #[Groups(['users:read'])]
-
     private ?\DateTimeInterface $birthday = null;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['users:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $street_number = null;
 
-    private ?Town $towns = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $town = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $district = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $country = null;
 
     public function getId(): ?int
     {
@@ -154,7 +151,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->lastName;
     }
 
-    public function setLastname(string $lastName): static
+    public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
 
@@ -185,14 +182,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTowns(): ?Town
+    public function getStreetNumber(): ?string
     {
-        return $this->towns;
+        return $this->street_number;
     }
 
-    public function setTowns(?Town $towns): static
+    public function setStreetNumber(?string $street_number): static
     {
-        $this->towns = $towns;
+        $this->street_number = $street_number;
+
+        return $this;
+    }
+
+    public function getTown(): ?string
+    {
+        return $this->town;
+    }
+
+    public function setTown(?string $town): static
+    {
+        $this->town = $town;
+
+        return $this;
+    }
+
+    public function getDistrict(): ?string
+    {
+        return $this->district;
+    }
+
+    public function setDistrict(?string $district): static
+    {
+        $this->district = $district;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): static
+    {
+        $this->country = $country;
 
         return $this;
     }

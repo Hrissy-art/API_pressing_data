@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
-#[ApiResource]
+#[ApiResource(normalizationContext:["groups"=>["service:read"]])]
 
 class Service
 {
@@ -31,6 +31,7 @@ class Service
     private ?float $coeff = null;
 
     #[ORM\OneToMany(mappedBy: 'services', targetEntity: OrderProduct::class)]
+
     private Collection $orderProducts;
 
     public function __construct()

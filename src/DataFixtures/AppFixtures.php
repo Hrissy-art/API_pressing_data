@@ -103,36 +103,36 @@ class AppFixtures extends Fixture
 
         }
 
-        $countries = [];
+        // $countries = [];
 
-        for ($i = 0; $i < 10; $i++) {
+        // for ($i = 0; $i < 10; $i++) {
 
-            $country = new Country();
-            $country->setName($faker->realTextBetween(3, 10));
-            $manager->persist($country);
-            $countries[] = $country;
-        }
+        //     $country = new Country();
+        //     $country->setName($faker->realTextBetween(3, 10));
+        //     $manager->persist($country);
+        //     $countries[] = $country;
+        // }
 
-        $districts = [];
-        for ($i = 0; $i < 10; $i++) {
-            $district = new District();
-            $district->setName($faker->realTextBetween(3, 10));
-            $district->setCountry($faker->randomElement($countries));
-            $manager->persist($district);
-            $districts[] = $district;
+        // $districts = [];
+        // for ($i = 0; $i < 10; $i++) {
+        //     $district = new District();
+        //     $district->setName($faker->realTextBetween(3, 10));
+        //     $district->setCountry($faker->randomElement($countries));
+        //     $manager->persist($district);
+        //     $districts[] = $district;
 
-        }
-        //towns 
-        $towns = [];
-        for ($i = 0; $i < 10; $i++) {
-            $town = new Town();
-            $town->setName($faker->realTextBetween(3, 10));
-            $town->setZipCode($faker->randomNumber(5, 10));
-            $town->setDistrict($faker->randomElement($districts));
-            $manager->persist($town);
-            $towns[] = $town;
+        // }
+        // //towns 
+        // $towns = [];
+        // for ($i = 0; $i < 10; $i++) {
+        //     $town = new Town();
+        //     $town->setName($faker->realTextBetween(3, 10));
+        //     $town->setZipCode($faker->randomNumber(5, 10));
+        //     $town->setDistrict($faker->randomElement($districts));
+        //     $manager->persist($town);
+        //     $towns[] = $town;
 
-        }
+        // }
 
         // clients
         $clients = [];
@@ -148,8 +148,13 @@ class AppFixtures extends Fixture
             $client->setLastname($faker->lastName());
             $client->setBirthday($faker->dateTimeBetween('-40 years', 'now'));
             $client->setAdress($faker->address());
-            $client->setTowns($faker->randomElement($towns));
-            $client->setRoles(['ROLE_CLIENT']);
+            $client->setTown($faker->randomElement());
+            $client->setStreetNumber($faker->randomNumber('1', '5'));
+            $client->setDistrict($faker->randomElement());
+            $client->setCountry($faker->randomElement());
+
+
+            // $client->setRoles(['ROLE_CLIENT']);
 
             $manager->persist($client);
             $clients[] = $client;
@@ -169,9 +174,13 @@ class AppFixtures extends Fixture
             $employee->setLastname($faker->lastName());
             $employee->setBirthday($faker->dateTimeBetween('-40 years', 'now'));
             $employee->setAdress($faker->address());
-            $employee->setIsAdmin($faker->boolean(3));
-            $employee->setTowns($faker->randomElement($towns));
+            $client->setTown($faker->randomElement());
+            $client->setStreetNumber($faker->randomNumber('1', '5'));
+            $client->setDistrict($faker->randomElement());
+            $client->setCountry($faker->randomElement());
             $employee->setEmpNumber($faker->randomNumber('1', '5'));
+            $employee->setIsAdmin($faker->boolean(3));
+
             //    $employee->setRoles(['ROLE_ADMIN', 'ROLE_EMPLOYEE']);
             $manager->persist($employee);
             $employees[] = $employee;
