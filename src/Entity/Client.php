@@ -7,13 +7,18 @@ use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-#[ApiResource]
+#[ApiResource (normalizationContext:['groups'=>['clients:read']])]
 
 class Client extends User
 {
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Order::class)]
+    #[Groups(['clients:read'])]
+
+
     private Collection $orders;
 
     public function __construct()
@@ -22,11 +27,9 @@ class Client extends User
     }
 
     #[ORM\Column]
+    #[Groups(['clients:read'])]
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+
 
     /**
      * @return Collection<int, Order>

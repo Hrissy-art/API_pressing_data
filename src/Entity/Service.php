@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ApiResource(normalizationContext:["groups"=>["service:read"]])]
 
@@ -22,16 +21,13 @@ class Service
 
     #[ORM\Column(length: 255)]
     #[Groups(['orderProduct:read'])]
-
     private ?string $name = null;
 
     #[ORM\Column]
     #[Groups(['orderProduct:read'])]
-
     private ?float $coeff = null;
 
-    #[ORM\OneToMany(mappedBy: 'services', targetEntity: OrderProduct::class)]
-
+    #[ORM\ManyToMany(mappedBy: 'services', targetEntity:OrderProduct::class)]
     private Collection $orderProducts;
 
     public function __construct()
@@ -80,7 +76,8 @@ class Service
     {
         if (!$this->orderProducts->contains($orderProduct)) {
             $this->orderProducts->add($orderProduct);
-            $orderProduct->setServices($this);
+            // Notez que pour une relation ManyToMany, vous n'avez pas besoin de définir l'inverse sur l'autre entité.
+            // $orderProduct->addService($this);
         }
 
         return $this;
@@ -88,13 +85,11 @@ class Service
 
     public function removeOrderProduct(OrderProduct $orderProduct): static
     {
-        if ($this->orderProducts->removeElement($orderProduct)) {
-            // set the owning side to null (unless already changed)
-            if ($orderProduct->getServices() === $this) {
-                $orderProduct->setServices(null);
-            }
-        }
+        $this->orderProducts->removeElement($orderProduct);
+        // Notez que pour une relation ManyToMany, vous n'avez pas besoin de définir l'inverse sur l'autre entité.
+        // $orderProduct->removeService($this);
 
         return $this;
     }
 }
+

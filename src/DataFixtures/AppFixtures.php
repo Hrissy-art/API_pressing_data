@@ -153,7 +153,6 @@ class AppFixtures extends Fixture
             $client->setDistrict($faker->randomElement());
             $client->setCountry($faker->randomElement());
 
-
             // $client->setRoles(['ROLE_CLIENT']);
 
             $manager->persist($client);
@@ -185,16 +184,7 @@ class AppFixtures extends Fixture
             $manager->persist($employee);
             $employees[] = $employee;
         }
-        // orders
-        for ($i = 0; $i < 10; $i++) {
-            $order = new Order();
-            $order->setDateOrder($faker->dateTimeThisMonth());
-            $order->setDateRender($faker->dateTimeThisMonth());
-            $order->setClient($faker->randomElement($clients));
-
-            $manager->persist($order);
-
-        }
+        
         //qualityproduct
 
         for ($i = 0; $i < 10; $i++) {
@@ -235,16 +225,34 @@ class AppFixtures extends Fixture
             $manager->persist($statusOrder);
             $statusOrderEntities[] = $statusOrder;
         }
+        // orders
+        for ($i = 0; $i < 10; $i++) {
+            $order = new Order();
+            $order->setDateOrder($faker->dateTimeThisMonth());
+            $order->setDateRender($faker->dateTimeThisMonth());
+            $order->setClient($faker->randomElement($clients));
+            $order->setStatusOrder($faker->randomElement($statusOrderEntities));
+
+            $manager->persist($order);
+
+        }
 
         for ($i = 0; $i < 10; $i++) {
             $orderProduct = new OrderProduct();
             $orderProduct->setQuantity($faker->numberBetween(1, 10));
             $orderProduct->setProducts($faker->randomElement($productsEntities));
-            $orderProduct->setMaterials($faker->randomElement($materialEntities));
-            $orderProduct->setProductsQualities($qualityProduct);
-            $orderProduct->setStatusesOrders($faker->randomElement($statusOrderEntities));
-            $orderProduct->setServices($faker->randomElement($pressingServiceEntities));
+            $numMaterials = $faker->numberBetween(1, count($materialEntities));
+            $selectedMaterials = $faker->randomElements($materialEntities, $numMaterials);
+            foreach ($selectedMaterials as $material) {
+                $orderProduct->addMaterial($material);
+            }   $orderProduct->setProductsQualities($qualityProduct);
+            // $orderProduct->setStatusesOrders($faker->randomElement($statusOrderEntities));
             $orderProduct->setOrders($order);
+            $numServices = $faker->numberBetween(1, count($pressingServiceEntities));
+    $selectedServices = $faker->randomElements($pressingServiceEntities, $numServices);
+    foreach ($selectedServices as $service) {
+        $orderProduct->addService($service);
+    }
             $manager->persist($orderProduct);
         }
         $manager->flush();

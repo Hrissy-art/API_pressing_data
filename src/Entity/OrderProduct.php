@@ -5,6 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\OrderProductRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -17,11 +19,10 @@ class OrderProduct
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['orderProduct:read'])]
-
     private ?int $id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-
+    // #[Groups(['orderProduct:read'])]
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
@@ -30,30 +31,24 @@ class OrderProduct
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
     private ?Order $orders = null;
 
+    #[ORM\ManyToMany(targetEntity: Material::class)]
+    #[Groups(['orderProduct:read'])]
+    private Collection $materials;
+
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderProduct:read'])]
-
-    private ?Material $materials = null;
-
-    #[ORM\ManyToOne(inversedBy: 'orderProducts')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderProduct:read'])]
-
+    // #[Groups(['orderProduct:read'])]
     private ?QualityProduct $products_qualities = null;
 
-    #[ORM\ManyToOne(inversedBy: 'orderProducts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToMany(targetEntity: Service::class)]
     #[Groups(['orderProduct:read'])]
+    private Collection $services;
 
-
-    private ?StatusOrder $statuses_orders = null;
-
-    #[ORM\ManyToOne(inversedBy: 'orderProducts')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderProduct:read'])]
-
-    private ?Service $services = null;
+    public function __construct()
+    {
+        $this->materials = new ArrayCollection();
+        $this->services = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -96,14 +91,26 @@ class OrderProduct
         return $this;
     }
 
-    public function getMaterials(): ?Material
+    /**
+     * @return Collection<int, Material>
+     */
+    public function getMaterials(): Collection
     {
         return $this->materials;
     }
 
-    public function setMaterials(?Material $materials): static
+    public function addMaterial(Material $material): static
     {
-        $this->materials = $materials;
+        if (!$this->materials->contains($material)) {
+            $this->materials[] = $material;
+        }
+
+        return $this;
+    }
+
+    public function removeMaterial(Material $material): static
+    {
+        $this->materials->removeElement($material);
 
         return $this;
     }
@@ -120,26 +127,26 @@ class OrderProduct
         return $this;
     }
 
-    public function getStatusesOrders(): ?StatusOrder
-    {
-        return $this->statuses_orders;
-    }
-
-    public function setStatusesOrders(?StatusOrder $statuses_orders): static
-    {
-        $this->statuses_orders = $statuses_orders;
-
-        return $this;
-    }
-
-    public function getServices(): ?Service
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
     {
         return $this->services;
     }
 
-    public function setServices(?Service $services): static
+    public function addService(Service $service): static
     {
-        $this->services = $services;
+        if (!$this->services->contains($service)) {
+            $this->services[] = $service;
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        $this->services->removeElement($service);
 
         return $this;
     }

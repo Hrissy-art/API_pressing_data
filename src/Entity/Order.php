@@ -42,6 +42,11 @@ class Order
 
     private ?Client $client = null;
 
+    #[ORM\ManyToOne(targetEntity: StatusOrder::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['order:read'])]
+    private ?StatusOrder $statusOrder = null;
+
     public function __construct()
     {
         $this->orderProducts = new ArrayCollection();
@@ -114,6 +119,18 @@ class Order
     public function setClient(?Client $client): static
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getStatusOrder(): ?StatusOrder
+    {
+        return $this->statusOrder;
+    }
+
+    public function setStatusOrder(?StatusOrder $statusOrder): static
+    {
+        $this->statusOrder = $statusOrder;
 
         return $this;
     }

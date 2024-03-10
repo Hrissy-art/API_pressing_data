@@ -9,8 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-#[ApiResource]
-class Category
+#[ApiResource(normalizationContext:["groups"=>["category:read"]])]class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,17 +19,21 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['products:read'])]
+    #[Groups(['products:read', 'category:read'])]
     private ?string $category_name = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[Groups(['category:read'])]
+
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[Groups(['category:read'])]
+
     private Collection $children;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
-    private Collection $products;
+    #[Groups(['category:read'])]    private Collection $products;
 
     public function __construct()
     {

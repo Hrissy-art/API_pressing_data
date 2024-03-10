@@ -25,12 +25,12 @@ class StatusOrder
 
     private ?string $status = null;
 
-    #[ORM\OneToMany(mappedBy: 'statuses_orders', targetEntity: OrderProduct::class)]
-    private Collection $orderProducts;
+    #[ORM\OneToMany(mappedBy: 'statusOrder', targetEntity: Order::class)]
+    private Collection $orders;
 
     public function __construct()
     {
-        $this->orderProducts = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,32 +51,33 @@ class StatusOrder
     }
 
     /**
-     * @return Collection<int, OrderProduct>
+     * @return Collection<int, Order>
      */
-    public function getOrderProducts(): Collection
+    public function getOrders(): Collection
     {
-        return $this->orderProducts;
+        return $this->orders;
     }
 
-    public function addOrderProduct(OrderProduct $orderProduct): static
+    public function addOrder(Order $order): static
     {
-        if (!$this->orderProducts->contains($orderProduct)) {
-            $this->orderProducts->add($orderProduct);
-            $orderProduct->setStatusesOrders($this);
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setStatusOrder($this);
         }
 
         return $this;
     }
 
-    public function removeOrderProduct(OrderProduct $orderProduct): static
+    public function removeOrder(Order $order): static
     {
-        if ($this->orderProducts->removeElement($orderProduct)) {
+        if ($this->orders->removeElement($order)) {
             // set the owning side to null (unless already changed)
-            if ($orderProduct->getStatusesOrders() === $this) {
-                $orderProduct->setStatusesOrders(null);
+            if ($order->getStatusOrder() === $this) {
+                $order->setStatusOrder(null);
             }
         }
 
         return $this;
     }
 }
+

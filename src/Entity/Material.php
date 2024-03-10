@@ -9,16 +9,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-
 #[ORM\Entity(repositoryClass: MaterialRepository::class)]
-#[ApiResource]
+#[ApiResource (normalizationContext:["groups"=>["material:read"]])]
 
 class Material
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -27,10 +25,9 @@ class Material
 
     #[ORM\Column(nullable: true)]
     #[Groups(['orderProduct:read'])]
-
     private ?float $coeff = null;
 
-    #[ORM\OneToMany(mappedBy: 'materials', targetEntity: OrderProduct::class)]
+    #[ORM\ManyToMany(mappedBy: 'materials', targetEntity: OrderProduct::class)]
     private Collection $orderProducts;
 
     public function __construct()
@@ -79,7 +76,7 @@ class Material
     {
         if (!$this->orderProducts->contains($orderProduct)) {
             $this->orderProducts->add($orderProduct);
-            $orderProduct->setMaterials($this);
+            $orderProduct->addMaterial($this);
         }
 
         return $this;
@@ -88,10 +85,7 @@ class Material
     public function removeOrderProduct(OrderProduct $orderProduct): static
     {
         if ($this->orderProducts->removeElement($orderProduct)) {
-            // set the owning side to null (unless already changed)
-            if ($orderProduct->getMaterials() === $this) {
-                $orderProduct->setMaterials(null);
-            }
+            $orderProduct->removeMaterial($this);
         }
 
         return $this;

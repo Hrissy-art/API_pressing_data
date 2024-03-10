@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(normalizationContext:['groups'=>['users:read']])]
+
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "discr", type: "string")]
 #[ORM\DiscriminatorMap(['user' => User::class, 'client' => Client::class, 'employee'=> Employee::class])]
@@ -19,7 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['users:read'])]
+    #[Groups (['users:read'])]
     protected ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -53,15 +54,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     protected ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['users:read'])]
+
     protected ?string $street_number = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['users:read'])]
+
     protected ?string $town = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['users:read'])]
+
     protected ?string $district = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['users:read'])]
+
     protected ?string $country = null;
 
     public function getId(): ?int
