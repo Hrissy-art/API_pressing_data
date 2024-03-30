@@ -11,12 +11,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-#[ApiResource (normalizationContext:['groups'=>['clients:read']])]
+#[ApiResource]
 
 class Client extends User
 {
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Order::class)]
-    #[Groups(['clients:read'])]
+    #[Groups (['orders:read'])]
+
 
 
     private Collection $orders;
@@ -27,7 +28,6 @@ class Client extends User
     }
 
     #[ORM\Column]
-    #[Groups(['clients:read'])]
 
 
 

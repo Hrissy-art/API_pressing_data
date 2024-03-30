@@ -11,8 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ApiResource(normalizationContext:["groups"=>["order:read"]])]
-
+#[ApiResource(normalizationContext:["groups"=>["order:read", 'order:write']])
+]
 #[ORM\Table(name: '`order`')]
 class Order
 {
@@ -20,32 +20,37 @@ class Order
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['orderproduct:read', "order:read"])]
-
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['orderproduct:read', "order:read"])]
-
     private ?\DateTimeInterface $dateOrder = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['orderproduct:read', "order:read"])]
-
     private ?\DateTimeInterface $dateRender = null;
 
     #[ORM\OneToMany(mappedBy: 'orders', targetEntity: OrderProduct::class)]
+    #[Groups(["order:read", 'orderproduct:read'])]
     private Collection $orderProducts;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['orderproduct:read', "order:read"])]
-
+    #[Groups(['orderproduct:read', "order:read", 'order:write'])]
     private ?Client $client = null;
 
     #[ORM\ManyToOne(targetEntity: StatusOrder::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['order:read'])]
+    #[Groups(['order:read', 'orderproduct:read'])]
     private ?StatusOrder $statusOrder = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['order:read', 'order:write'])]
+    private ?int $numberOrder = null;
+
+    #[ORM\ManyToOne(inversedBy: 'employeeOrder')]
+    #[Groups(['order:read', 'order:write'])]
+    private ?Employee $employee = null;
 
     public function __construct()
     {
@@ -134,4 +139,33 @@ class Order
 
         return $this;
     }
+
+    public function getNumberOrder(): ?int
+    {
+        return $this->numberOrder;
+    }
+
+    public function setNumberOrder(?int $numberOrder): static
+    {
+        $this->numberOrder = $numberOrder;
+
+        return $this;
+    }
+
+    public function getEmployee(): ?Employee
+    {
+        return $this->employee;
+    }
+
+    public function setEmployee(?Employee $employee): static
+    {
+        $this->employee = $employee;
+
+        return $this;
+    }
+
+    // public function __toString()
+    // {
+    //     return $this->get();
+    // } 
 }

@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StatusOrderRepository::class)]
-#[ApiResource]
+#[ApiResource(normalizationContext:["groups"=>["status:read"]])]
 
 class StatusOrder
 {
@@ -21,11 +21,12 @@ class StatusOrder
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['orderProduct:read'])]
+    #[Groups(['orderProduct:read','order:read', 'status:read'])]
 
     private ?string $status = null;
 
     #[ORM\OneToMany(mappedBy: 'statusOrder', targetEntity: Order::class)]
+    // #[Groups(['order:read'])]
     private Collection $orders;
 
     public function __construct()
@@ -79,5 +80,11 @@ class StatusOrder
 
         return $this;
     }
+
+    public function __toString():string
+    {
+        return $this->getStatus();
+    }
 }
+
 

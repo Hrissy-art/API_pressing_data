@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ApiResource (normalizationContext:['groups'=>['products:read']])]
+#[ApiResource (normalizationContext:['groups'=>['products:read', 'products:write']])]
 class Product
 {
     #[ORM\Id]
@@ -19,12 +19,12 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['products:read', 'category:read'])]
+    #[Groups(['products:read', 'category:read', 'orderProduct:read', 'products:write'])]
 
     private ?string $product_name = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['products:read'])]
+    #[Groups(['products:read', 'orderProduct:read'])]
 
     private ?float $price = null;
 
@@ -35,6 +35,16 @@ class Product
 
     #[ORM\OneToMany(mappedBy: 'products', targetEntity: OrderProduct::class, fetch: 'LAZY')]
     private Collection $orderProducts;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['products:read', 'orderProduct:read'])]
+
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['products:read', 'orderProduct:read'])]
+
+    private ?string $product_img = null;
 
     public function __construct()
     {
@@ -111,7 +121,37 @@ class Product
 
         return $this;
     }
-} 
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getProductImg(): ?string
+    {
+        return $this->product_img;
+    }
+
+    public function setProductImg(?string $product_img): static
+    {
+        $this->product_img = $product_img;
+
+        return $this;
+    }
+
+//     public function __toString()
+// {
+//     return $this->getProductName();
+// } 
+
+}
 
 // // src/Entity/Product.php
 

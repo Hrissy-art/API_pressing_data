@@ -17,17 +17,20 @@ class Service
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['orderProduct:read','service:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['orderProduct:read'])]
+    #[Groups(['orderProduct:read', 'service:read'])]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Groups(['orderProduct:read'])]
+    #[Groups(['orderProduct:read', 'service:read'])]
     private ?float $coeff = null;
 
     #[ORM\ManyToMany(mappedBy: 'services', targetEntity:OrderProduct::class)]
+    // #[Groups(['orderProduct:read'])]
+
     private Collection $orderProducts;
 
     public function __construct()
@@ -91,5 +94,10 @@ class Service
 
         return $this;
     }
+
+    // public function __toString()
+    // {
+    // return $this->getName();
+    // }
 }
 

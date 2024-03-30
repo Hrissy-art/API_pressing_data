@@ -33,7 +33,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
     private Collection $children;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
-    #[Groups(['category:read'])]    private Collection $products;
+    #[Groups(['category:read'])]    
+    
+    private Collection $products;
 
     public function __construct()
     {
@@ -129,4 +131,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
         return $this;
     }
+
+
 }

@@ -14,62 +14,64 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "discr", type: "string")]
-#[ORM\DiscriminatorMap(['user' => User::class, 'client' => Client::class, 'employee'=> Employee::class])]
+#[ORM\DiscriminatorMap(['user' => User::class, 'client' => Client::class, 'employee'=> Employee::class, 'admin' => Admin::class])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups (['users:read'])]
+    #[Groups (['users:read', 'clients:read', 'order:read','employees:read'])]
     protected ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read', 'cleints:read', 'order:read','employees:read'])]
     protected ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['users:read'])]
+
     protected array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read', 'employees:read'])]
     protected ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read', 'order:read', 'employees:read'])]
     protected ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read', 'order:read', 'employees:read'])]
     protected ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read','order:read', 'employees:read'])]
     protected ?string $adress = null;
 
     #[ORM\Column(type: "date")]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read', 'employees:read'])]
     protected ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read', 'order:read', 'employees:read'])]
 
     protected ?string $street_number = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read', 'order:read', 'employees:read'])]
 
     protected ?string $town = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read','order:read', 'employees:read'])]
 
     protected ?string $district = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['users:read'])]
+    #[Groups(['users:read','order:read', 'employees:read'])]
 
     protected ?string $country = null;
 

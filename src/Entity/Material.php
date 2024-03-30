@@ -10,24 +10,27 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MaterialRepository::class)]
-#[ApiResource (normalizationContext:["groups"=>["material:read"]])]
+#[ApiResource (normalizationContext:["groups"=>["material:read", "material:write"]])]
 
 class Material
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([ 'orderProduct:read', 'material:read' ])]
+
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['orderProduct:read'])]
+    #[Groups(['orderProduct:read', 'material:read' ])]
     private ?string $name = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['orderProduct:read'])]
+    #[Groups(['orderProduct:read', 'material:read'])]
     private ?float $coeff = null;
 
     #[ORM\ManyToMany(mappedBy: 'materials', targetEntity: OrderProduct::class)]
+
     private Collection $orderProducts;
 
     public function __construct()
@@ -90,4 +93,9 @@ class Material
 
         return $this;
     }
+    // public function __toString()
+    // {
+    // return $this->getName();
+    // }
+
 }

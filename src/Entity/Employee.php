@@ -4,20 +4,31 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EmployeeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
-#[ApiResource]
+#[ApiResource (normalizationContext:['groups'=>['employees:read']])]
 
 class Employee extends User
 {
 
     #[ORM\Column(length: 255)]
+    #[Groups(['employees:read'])]
     private ?string $empNumber = null;
 
-    #[ORM\Column]
-    private ?bool $isAdmin = null;
+    #[ORM\OneToMany(mappedBy: 'employee', targetEntity: Order::class)]
+    private Collection $employeeOrder;
 
+    public function __construct()
+    {
+        $this->employeeOrder = new ArrayCollection();
+    }
+
+    
     public function getEmpNumber(): ?string
     {
         return $this->empNumber;
@@ -30,15 +41,34 @@ class Employee extends User
         return $this;
     }
 
-    public function isIsAdmin(): ?bool
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getEmployeeOrder(): Collection
     {
-        return $this->isAdmin;
+        return $this->employeeOrder;
     }
 
-    public function setIsAdmin(bool $isAdmin): static
+    public function addEmployeeOrder(Order $employeeOrder): static
     {
-        $this->isAdmin = $isAdmin;
+        if (!$this->employeeOrder->contains($employeeOrder)) {
+            $this->employeeOrder->add($employeeOrder);
+            $employeeOrder->setEmployee($this);
+        }
 
         return $this;
     }
+
+    public function removeEmployeeOrder(Order $employeeOrder): static
+    {
+        if ($this->employeeOrder->removeElement($employeeOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($employeeOrder->getEmployee() === $this) {
+                $employeeOrder->setEmployee(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
