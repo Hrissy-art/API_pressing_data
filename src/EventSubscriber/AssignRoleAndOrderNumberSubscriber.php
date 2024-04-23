@@ -13,7 +13,6 @@ class AssignRoleAndOrderNumberSubscriber implements EventSubscriberInterface
         $entity = $args->getObject();
         $entityManager = $args->getEntityManager();
 
-        // Assign role only if the entity being persisted is a Client
   
 
         if ($entity instanceof Order) {
@@ -22,8 +21,8 @@ class AssignRoleAndOrderNumberSubscriber implements EventSubscriberInterface
           $newOrderNumber = $latestOrderNumber + 1;
           $entity->setNumberOrder($newOrderNumber);
 
-          // Set date for rendering, you can use current date or any other logic to set the date
-          $currentDate = new \DateTime(); // Current date time
+          
+          $currentDate = new \DateTime(); 
           $entity->setDateRender($currentDate);
       }
   }

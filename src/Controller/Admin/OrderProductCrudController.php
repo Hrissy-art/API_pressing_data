@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+
 
 class OrderProductCrudController extends AbstractCrudController
 {
@@ -15,14 +17,19 @@ class OrderProductCrudController extends AbstractCrudController
         return OrderProduct::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
             IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+            AssociationField::new('products')->autocomplete(),
+            
+            AssociationField::new('orders')->autocomplete(),
+        //    AssociationField::new('materials')->setSortProperty('name'),
+        //    AssociationField::new('services')->setSortProperty('name')      
+       
+       
+         ];
+
+        
     }
-    */
 }

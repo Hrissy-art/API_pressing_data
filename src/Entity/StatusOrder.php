@@ -17,6 +17,8 @@ class StatusOrder
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([ 'status:read'])]
+
 
     private ?int $id = null;
 

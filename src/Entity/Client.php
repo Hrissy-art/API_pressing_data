@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-#[ApiResource]
+#[ApiResource (normalizationContext:['groups'=>['clients:read']])]
 
 class Client extends User
 {

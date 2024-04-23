@@ -208,7 +208,10 @@ class AppFixtures extends Fixture
             $payments[] = $payment;
 
         }
-
+ // $client->setPassword($this->userPasswordHasherInterface->hashPassword(
+            //     $client,
+            //     "test_pass"
+            // )
 
         // clients
         $clients = [];
@@ -218,10 +221,6 @@ class AppFixtures extends Fixture
             $client->setPassword(
                 "test_pass"
             )
-            // $client->setPassword($this->userPasswordHasherInterface->hashPassword(
-            //     $client,
-            //     "test_pass"
-            // )
             ;
             $client->setFirstName($faker->firstName());
             $client->setLastname($faker->lastName());
